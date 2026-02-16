@@ -137,7 +137,8 @@ void main() {
     rayPos = camPos + totalDist * ray;
   }
 
-  vec3 color = vec3(0.07, 0.20, 0.35);
+  // Deep dark base
+  vec3 color = vec3(0.01, 0.05, 0.01);
 
   float cLen = length(centeredUV);
   cLen = 1.0 - smoothstep(0.0, 0.7, cLen);
@@ -148,14 +149,15 @@ void main() {
     
     float d = length(rayPos);
     d = smoothstep(0.5, 1.0, d);
-    // Green Theme Colors
-    // Core: Bright Green
-    // Dark: Deep Green/Black
-    color = mix(vec3(0.30, 0.74, 0.11), vec3(0.00, 0.10, 0.00), d);
+    
+    // Theme Green: #4DBC1B -> (0.30, 0.74, 0.11)
+    // Core: Bright Neon Green
+    // Dark: Deep Forest Green
+    color = mix(vec3(0.30, 0.74, 0.11), vec3(0.02, 0.20, 0.02), d);
     
     float _fresnel = fresnel(ray, normal);
-    // Fresnel Glow: White/Green
-    color += vec3(0.6, 1.0, 0.6) * _fresnel * 0.8;
+    // Fresnel Glow: Bright Greenish White
+    color += vec3(0.6, 1.0, 0.6) * _fresnel * 1.5;
   }
 
   gl_FragColor = vec4(color, 1.0);
@@ -336,7 +338,7 @@ const CameraRig = () => {
 // -----------------------------------------------------------------------------
 export default function SphereAnimation() {
   // TOGGLE THIS TO TRUE TO ENABLE BLUR/GLOW EFFECTS
-  const ENABLE_EFFECTS = true;
+  const ENABLE_EFFECTS = false;
 
   return (
     // IMPORTANT: style height must be set for Canvas to appear
@@ -345,9 +347,10 @@ export default function SphereAnimation() {
         orthographic
         camera={{ zoom: 1, position: [0, 0, 10], near: -10, far: 10 }}
         dpr={[1, 2]}
+        gl={{ alpha: true }}
       >
         {/* Transparent background to blend with section */}
-        <color attach="background" args={['#000000']} />
+        {/* <color attach="background" args={['#000000']} /> */}
         <CameraRig />
         <ScreenPlane />
         {ENABLE_EFFECTS && <Effects />}

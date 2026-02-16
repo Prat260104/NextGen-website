@@ -20,10 +20,11 @@ const features = [
 
 export default function RivaSection() {
     return (
-        <section className="relative bg-black text-white py-24 px-4 md:px-8 overflow-hidden min-h-screen flex flex-col justify-center items-center">
+        <section className="relative bg-black text-white pt-0 pb-24 px-4 md:px-8 overflow-hidden min-h-[80vh] flex flex-col justify-center items-center">
 
             {/* Background 01 */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[30vw] md:text-[500px] font-bold text-white/[0.03] select-none pointer-events-none leading-none z-0 tracking-tighter">
+
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[25vw] md:text-[450px] font-bold text-white/[0.2] select-none pointer-events-none leading-none z-0 tracking-tighter">
                 01
             </div>
 
@@ -47,7 +48,7 @@ export default function RivaSection() {
 
                     {/* Ring Visual Layer - Behind Text */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center z-0 pointer-events-none">
-                        <div className="w-[600px] h-[600px] opacity-80">
+                        <div className="w-[650px] h-[850px] opacity-70">
                             <ThreeSphere />
                         </div>
                     </div>
@@ -57,7 +58,7 @@ export default function RivaSection() {
                         <motion.span
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
-                            className="text-[#4DBC1B] font-bold tracking-[0.2em] text-lg md:text-xl mb-[-10px] z-20"
+                            className="text-white font-bold tracking-[0.2em] text-lg md:text-xl mb-[-10px] z-20"
                         >
                             MEET
                         </motion.span>
@@ -65,7 +66,10 @@ export default function RivaSection() {
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.8 }}
-                            className="text-7xl md:text-[150px] font-black text-white/90 tracking-tighter leading-none z-10 drop-shadow-[0_0_50px_rgba(255,255,255,0.3)]"
+                            className="text-7xl md:text-[150px] font-black text-white/90 tracking-tighter leading-none z-10"
+                            style={{
+                                textShadow: "0 0 20px rgba(255,255,255,0.6), 0 0 40px rgba(77, 188, 27, 0.4)"
+                            }}
                         >
                             RIVA
                         </motion.h2>

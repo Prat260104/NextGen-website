@@ -50,7 +50,7 @@ export default function AboutUs() {
         <section
             id="about"
             ref={sectionRef}
-            className="relative bg-black py-24 md:py-32 px-4 md:px-8 overflow-hidden"
+            className="relative bg-black pt-24 pb-10 md:pt-32 md:pb-16 px-4 md:px-8 overflow-hidden"
         >
             <div ref={headingRef} className="max-w-7xl mx-auto mb-16 md:mb-24">
                 <motion.h2
