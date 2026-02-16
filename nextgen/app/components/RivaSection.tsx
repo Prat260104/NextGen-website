@@ -44,11 +44,11 @@ export default function RivaSection() {
                 </motion.div>
 
                 {/* Center Content */}
-                <div className="md:col-span-6 relative flex flex-col items-center justify-center order-1 md:order-2 h-[500px]">
+                <div className="md:col-span-6 relative flex flex-col items-center justify-center order-1 md:order-2 h-[700px]">
 
                     {/* Ring Visual Layer - Behind Text */}
                     <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full flex items-center justify-center z-0 pointer-events-none">
-                        <div className="w-[650px] h-[850px] opacity-70">
+                        <div className="w-[850px] h-[850px] opacity-70">
                             <ThreeSphere />
                         </div>
                     </div>

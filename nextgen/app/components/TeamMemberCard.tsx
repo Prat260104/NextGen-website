@@ -1,13 +1,13 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Github, Linkedin, Twitter } from "lucide-react";
+import { Github, Linkedin, Twitter, User } from "lucide-react";
 import Image from "next/image";
 
 interface TeamMemberProps {
     name: string;
     role: string;
-    image: string;
+    image?: string;
     bio: string;
     socials?: {
         github?: string;
@@ -31,18 +31,17 @@ export default function TeamMemberCard({ name, role, image, bio, socials, delay 
 
             <div className="relative z-10 flex flex-col items-center text-center">
                 {/* Image Container */}
-                <div className="relative w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-[#4DBC1B] transition-colors duration-300">
-                    <div className="absolute inset-0 bg-gray-800 animate-pulse" /> {/* Placeholder */}
-                    {/* 
-                      In a real app, use next/image. For now, a placeholder div or fallback is safer if no assets exist.
-                      If image prop is a URL, we can try to use it.
-                    */}
-                    {image && (
+                <div className="relative w-32 h-32 mb-6 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-[#4DBC1B] transition-colors duration-300 bg-gray-900">
+                    {image ? (
                         <img
                             src={image}
                             alt={name}
                             className="w-full h-full object-cover"
                         />
+                    ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-700 group-hover:text-[#4DBC1B] transition-colors">
+                            <User className="w-16 h-16" />
+                        </div>
                     )}
                 </div>
 

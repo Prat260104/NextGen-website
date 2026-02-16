@@ -1,106 +1,73 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import InfiniteCarousel from "./InfiniteCarousel";
 
 const events = [
-    { title: "AI Summit 2024", subtitle: "Annual Conference" },
-    { title: "HPC Workshop", subtitle: "Hands-on Training" },
-    { title: "Hackathon", subtitle: "48-Hour Build" },
-    { title: "Research Symposium", subtitle: "Paper Presentations" },
-    { title: "GPU Programming", subtitle: "CUDA Workshop" },
-    { title: "Cloud Summit", subtitle: "Infrastructure Talk" },
+    {
+        title: "AI Summit 2024",
+        subtitle: "Annual Conference",
+        image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=600",
+        desc: "Join industry leaders and researchers for a deep dive into the latest advancements in Artificial Intelligence."
+    },
+    {
+        title: "HPC Workshop",
+        subtitle: "Hands-on Training",
+        image: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&q=80&w=600",
+        desc: "Master the art of High Performance Computing with our intensive weekend workshop."
+    },
+    {
+        title: "Hackathon",
+        subtitle: "48-Hour Build",
+        image: "https://images.unsplash.com/photo-1504384308090-c54be3852f33?auto=format&fit=crop&q=80&w=600",
+        desc: "Collaborate, innovate, and build amazing projects in our annual 48-hour coding marathon."
+    },
+    {
+        title: "Research Symposium",
+        subtitle: "Paper Presentations",
+        image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&q=80&w=600",
+        desc: "Students and faculty present groundbreaking research papers on cutting-edge topics."
+    },
+    {
+        title: "GPU Programming",
+        subtitle: "CUDA Workshop",
+        image: "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?auto=format&fit=crop&q=80&w=600",
+        desc: "Learn to harness the power of GPUs for massive parallel processing tasks."
+    },
+    {
+        title: "Cloud Summit",
+        subtitle: "Infrastructure Talk",
+        image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=600",
+        desc: "Explore the future of cloud infrastructure and scalable solutions."
+    },
 ];
 
 export default function EventsSection() {
-    const [page, setPage] = useState(0);
-    const eventsPerPage = 3;
-    const totalPages = Math.ceil(events.length / eventsPerPage);
-    const visibleEvents = events.slice(page * eventsPerPage, page * eventsPerPage + eventsPerPage);
-
     return (
-        <section className="relative bg-black py-24 md:py-32 px-4 md:px-8 overflow-hidden">
+        <section className="relative bg-black py-16 md:py-24 px-4 md:px-8 overflow-hidden">
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.7 }}
                 viewport={{ once: true }}
-                className="text-center mb-16"
+                className="text-center mb-8"
             >
-                <h2 className="text-3xl md:text-5xl font-black tracking-tight">
+                <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">
                     <span className="text-white">LATEST EVENTS </span>
                     <span className="text-[#4DBC1B] text-glow">CONDUCTED</span>
                 </h2>
+                <p className="text-gray-400 max-w-2xl mx-auto">
+                    Exploring the frontiers of technology through workshops, hackathons, and seminars.
+                </p>
             </motion.div>
 
-            <div className="max-w-6xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    {visibleEvents.map((event, i) => (
-                        <motion.div
-                            key={`${event.title}-${page}`}
-                            initial={{ opacity: 0, y: 40 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.5, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-                            viewport={{ once: true }}
-                            className="group"
-                        >
-                            <motion.div
-                                whileHover={{ scale: 1.03, boxShadow: "0 0 30px rgba(77, 188, 27, 0.2)" }}
-                                transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                                className="relative rounded-xl border border-[#4DBC1B]/20 bg-[#0a0a0a] overflow-hidden mb-4 magnetic-item"
-                                style={{ aspectRatio: "4/3" }}
-                            >
-                                <div className="absolute top-0 left-0 w-8 h-8 border-t border-l border-[#4DBC1B]/40 rounded-tl-xl" />
-                                <div className="absolute top-0 right-0 w-8 h-8 border-t border-r border-[#4DBC1B]/40 rounded-tr-xl" />
-                                <div className="absolute bottom-0 left-0 w-8 h-8 border-b border-l border-[#4DBC1B]/40 rounded-bl-xl" />
-                                <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-[#4DBC1B]/40 rounded-br-xl" />
-                                <div
-                                    className="absolute inset-0 opacity-[0.03]"
-                                    style={{
-                                        backgroundImage: "linear-gradient(rgba(77,188,27,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(77,188,27,0.5) 1px, transparent 1px)",
-                                        backgroundSize: "25px 25px",
-                                    }}
-                                />
-                                <div className="absolute inset-0 bg-[#4DBC1B]/0 group-hover:bg-[#4DBC1B]/[0.03] transition-colors duration-500" />
-                            </motion.div>
-                            <h3 className="text-white font-bold text-lg">{event.title}</h3>
-                            <p className="text-gray-500 text-sm">{event.subtitle}</p>
-                        </motion.div>
-                    ))}
-                </div>
-
-                <div className="flex items-center gap-3">
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setPage((p) => Math.max(0, p - 1))}
-                        disabled={page === 0}
-                        className="w-8 h-8 rounded-full border border-[#4DBC1B]/30 flex items-center justify-center text-[#4DBC1B] hover:bg-[#4DBC1B]/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed magnetic-item"
-                    >
-                        <ChevronLeft className="w-4 h-4" />
-                    </motion.button>
-                    <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
-                        disabled={page === totalPages - 1}
-                        className="w-8 h-8 rounded-full border border-[#4DBC1B]/30 flex items-center justify-center text-[#4DBC1B] hover:bg-[#4DBC1B]/10 transition-colors disabled:opacity-30 disabled:cursor-not-allowed magnetic-item"
-                    >
-                        <ChevronRight className="w-4 h-4" />
-                    </motion.button>
-                    <div className="flex gap-2 ml-2">
-                        {Array.from({ length: totalPages }).map((_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setPage(i)}
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${i === page ? "bg-[#4DBC1B] w-6" : "bg-gray-600 hover:bg-gray-500"
-                                    }`}
-                            />
-                        ))}
-                    </div>
-                </div>
+            <div className="max-w-7xl mx-auto">
+                <InfiniteCarousel items={events} />
             </div>
+
+            {/* Background elements */}
+            <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-[#4DBC1B]/5 rounded-full blur-[100px] -translate-x-1/2 -translate-y-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 right-0 w-[300px] h-[300px] bg-[#4DBC1B]/5 rounded-full blur-[80px] translate-x-1/3 translate-y-1/3 pointer-events-none" />
         </section>
     );
 }
