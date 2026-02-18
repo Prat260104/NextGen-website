@@ -63,26 +63,26 @@ function DomainSection({ title, members, color, borderColor }: { title: string, 
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="mb-8 w-full">
+        <div className="mb-6 md:mb-8 w-full">
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] p-6 md:p-8 transition-all duration-300 hover:bg-white/5 ${borderColor}`}
+                className={`w-full group relative overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0a] p-5 md:p-8 transition-all duration-300 hover:bg-white/5 ${borderColor}`}
             >
                 {/* Background Gradient */}
                 <div className={`absolute inset-0 bg-gradient-to-r ${color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
 
                 <div className="relative z-10 flex items-center justify-between">
-                    <div className="flex flex-col items-start gap-2">
-                        <h3 className="text-2xl md:text-3xl font-bold text-white group-hover:text-white transition-colors">
+                    <div className="flex flex-col items-start gap-1 md:gap-2">
+                        <h3 className="text-xl md:text-3xl font-bold text-white group-hover:text-white transition-colors text-left">
                             {title}
                         </h3>
-                        <span className="text-sm font-medium text-gray-400 uppercase tracking-widest">
+                        <span className="text-xs md:text-sm font-medium text-gray-400 uppercase tracking-widest">
                             {members.length} Members
                         </span>
                     </div>
 
-                    <div className={`p-3 rounded-full bg-white/5 border border-white/10 transition-transform duration-300 ${isOpen ? "rotate-180 bg-white/10" : ""}`}>
-                        <ChevronDown className="w-6 h-6 text-white" />
+                    <div className={`p-2 md:p-3 rounded-full bg-white/5 border border-white/10 transition-transform duration-300 ${isOpen ? "rotate-180 bg-white/10" : ""}`}>
+                        <ChevronDown className="w-5 h-5 md:w-6 md:h-6 text-white" />
                     </div>
                 </div>
             </button>
@@ -96,7 +96,7 @@ function DomainSection({ title, members, color, borderColor }: { title: string, 
                         transition={{ duration: 0.4, ease: "easeInOut" }}
                         className="overflow-hidden"
                     >
-                        <div className="pt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+                        <div className="pt-6 md:pt-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-6">
                             {members.map((member, index) => (
                                 <TeamMemberCard
                                     key={index}
@@ -123,17 +123,17 @@ export default function TeamPage() {
             </div>
 
             {/* Hero Section */}
-            <section className="relative z-10 pt-40 pb-16 px-4 text-center">
+            <section className="relative z-10 pt-32 md:pt-40 pb-12 md:pb-16 px-4 text-center">
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8 }}
                     className="max-w-4xl mx-auto"
                 >
-                    <h1 className="text-5xl md:text-7xl font-black tracking-tight mb-6">
+                    <h1 className="text-4xl md:text-7xl font-black tracking-tight mb-4 md:mb-6">
                         Meet the <span className="text-[#4DBC1B] text-glow">Team</span>
                     </h1>
-                    <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed">
+                    <p className="text-gray-400 text-base md:text-xl max-w-2xl mx-auto leading-relaxed">
                         The brilliant minds driving innovation at NextGen.
                     </p>
                 </motion.div>
@@ -141,13 +141,13 @@ export default function TeamPage() {
 
             {/* Core Team Grid */}
             <section className="relative z-10 px-4 md:px-12 pb-20 max-w-7xl mx-auto">
-                <div className="flex items-center gap-4 mb-12">
+                <div className="flex items-center gap-4 mb-8 md:mb-12">
                     <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#4DBC1B]/50"></div>
-                    <h2 className="text-3xl font-bold text-white tracking-widest uppercase">Core Team</h2>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white tracking-widest uppercase">Core Team</h2>
                     <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#4DBC1B]/50"></div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-8 justify-items-center">
                     {coreTeam.map((member, index) => (
                         <TeamMemberCard
                             key={index}

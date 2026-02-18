@@ -16,7 +16,9 @@ interface Particle {
     direction: number; // -1 for left, 1 for right
 }
 
-const PARTICLE_COUNT = 600;
+
+const PARTICLE_COUNT_DESKTOP = 700;
+const PARTICLE_COUNT_MOBILE = 250;
 const DOT_COLOR = [77, 188, 27];
 const REPULSION_RADIUS = 300;
 const REPULSION_STRENGTH = 100;
@@ -28,6 +30,7 @@ export default function InteractiveDotGrid({ startAnimation = false }: { startAn
     const mouseRef = useRef({ x: -1000, y: -1000 });
     const animFrameRef = useRef<number>(0);
     const sizeRef = useRef({ w: 0, h: 0 });
+    const rectRef = useRef<DOMRect | null>(null);
 
     const buildParticles = useCallback(() => {
         const w = sizeRef.current.w;
@@ -35,7 +38,10 @@ export default function InteractiveDotGrid({ startAnimation = false }: { startAn
         const centerX = w / 2;
         const particles: Particle[] = [];
 
-        for (let i = 0; i < PARTICLE_COUNT; i++) {
+        // Determine particle count based on width
+        const count = w < 768 ? PARTICLE_COUNT_MOBILE : PARTICLE_COUNT_DESKTOP;
+
+        for (let i = 0; i < count; i++) {
             const x = Math.random() * w;
             const y = Math.random() * h;
             const direction = x < centerX ? -1 : 1;
@@ -63,9 +69,12 @@ export default function InteractiveDotGrid({ startAnimation = false }: { startAn
         const ctx = canvas.getContext("2d");
         if (!ctx) return;
 
-        const resize = () => {
+        const updateSize = () => {
             const dpr = window.devicePixelRatio || 1;
             const rect = canvas.parentElement?.getBoundingClientRect();
+            // Cache the rect for mouse move calculations
+            if (rect) rectRef.current = rect;
+
             const w = rect?.width || window.innerWidth;
             const h = rect?.height || window.innerHeight;
             canvas.width = w * dpr;
@@ -78,8 +87,22 @@ export default function InteractiveDotGrid({ startAnimation = false }: { startAn
         };
 
         const onMouseMove = (e: MouseEvent) => {
-            const rect = canvas.getBoundingClientRect();
-            mouseRef.current = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+            if (!rectRef.current && canvas.parentElement) {
+                rectRef.current = canvas.parentElement.getBoundingClientRect();
+            }
+            if (rectRef.current) {
+                mouseRef.current = {
+                    x: e.clientX - rectRef.current.left,
+                    y: e.clientY - rectRef.current.top
+                };
+            }
+        };
+
+        // Update rect on scroll to keep mouse position accurate relative to canvas
+        const onScroll = () => {
+            if (canvas.parentElement) {
+                rectRef.current = canvas.parentElement.getBoundingClientRect();
+            }
         };
 
         let time = 0;
@@ -153,14 +176,23 @@ export default function InteractiveDotGrid({ startAnimation = false }: { startAn
             animFrameRef.current = requestAnimationFrame(animate);
         };
 
-        resize();
-        window.addEventListener("resize", resize);
+        let resizeTimeout: NodeJS.Timeout;
+        const onResize = () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(updateSize, 200);
+        };
+
+        updateSize();
+        window.addEventListener("resize", onResize);
+        window.addEventListener("scroll", onScroll);
         document.addEventListener("mousemove", onMouseMove);
         animate();
 
         return () => {
             cancelAnimationFrame(animFrameRef.current);
-            window.removeEventListener("resize", resize);
+            clearTimeout(resizeTimeout);
+            window.removeEventListener("resize", onResize);
+            window.removeEventListener("scroll", onScroll);
             document.removeEventListener("mousemove", onMouseMove);
         };
     }, [buildParticles, startAnimation]);

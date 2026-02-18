@@ -3,7 +3,10 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useInView, useMotionValueEvent } from "framer-motion";
 
-const TIMELINE_PATH = "M 350 30 C 350 100, 110 100, 110 170 S 430 240, 430 330 S 80 380, 80 470 C 80 550, 330 590, 330 650";
+// Desktop path — wider swing
+const TIMELINE_PATH_DESKTOP = "M 350 30 C 350 100, 150 100, 150 170 S 450 240, 450 330 S 150 380, 150 470 C 150 550, 350 590, 350 650";
+// Mobile path — tighter swing so labels stay within screen
+const TIMELINE_PATH_MOBILE = "M 320 30 C 320 100, 180 100, 180 170 S 420 240, 420 330 S 180 380, 180 470 C 180 550, 320 590, 320 650";
 
 const milestones = [
     { label: "Beginning", description: "Where it all started", pos: 0 },
@@ -21,6 +24,9 @@ export default function AboutUs() {
     const [totalLength, setTotalLength] = useState(0);
     const [drawLength, setDrawLength] = useState(0);
     const [dotPositions, setDotPositions] = useState<{ x: number; y: number }[]>([]);
+    const [isMobile, setIsMobile] = useState(false);
+
+    const TIMELINE_PATH = isMobile ? TIMELINE_PATH_MOBILE : TIMELINE_PATH_DESKTOP;
 
     const { scrollYProgress } = useScroll({
         target: sectionRef,
@@ -28,6 +34,13 @@ export default function AboutUs() {
     });
 
     const progress = useTransform(scrollYProgress, [0, 0.8], [0, 1]);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener("resize", checkMobile);
+        return () => window.removeEventListener("resize", checkMobile);
+    }, []);
 
     useEffect(() => {
         if (pathRef.current) {
@@ -39,7 +52,7 @@ export default function AboutUs() {
             });
             setDotPositions(positions);
         }
-    }, []);
+    }, [TIMELINE_PATH]);
 
     useMotionValueEvent(progress, "change", (val) => {
         const clamped = Math.max(0, Math.min(1, val));
@@ -50,7 +63,7 @@ export default function AboutUs() {
         <section
             id="about"
             ref={sectionRef}
-            className="relative bg-black pt-24 pb-10 md:pt-32 md:pb-16 px-4 md:px-8 overflow-hidden"
+            className="relative bg-black pt-24 pb-10 md:pt-32 md:pb-16 px-4 md:px-8"
         >
             <div ref={headingRef} className="max-w-7xl mx-auto mb-16 md:mb-24">
                 <motion.h2
@@ -61,20 +74,20 @@ export default function AboutUs() {
                             : { opacity: 0, y: 80, scale: 0.9 }
                     }
                     transition={{ duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] }}
-                    className="text-6xl md:text-[10rem] font-black tracking-tighter leading-none text-center"
+                    className="text-5xl sm:text-7xl md:text-[10rem] font-black tracking-tighter leading-none text-center"
                 >
                     <span className="text-white">ABOUT </span>
                     <span className="text-[#4DBC1B] text-glow">US</span>
                 </motion.h2>
             </div>
 
-            <div className="max-w-3xl mx-auto text-center mb-20 md:mb-32">
+            <div className="max-w-3xl mx-auto text-center mb-16 md:mb-32">
                 <motion.p
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7, delay: 0.2 }}
                     viewport={{ once: true }}
-                    className="text-gray-300 text-lg md:text-xl leading-relaxed mb-8"
+                    className="text-gray-300 text-base md:text-xl leading-relaxed mb-8"
                 >
                     We are a collective of student researchers, builders, and curious
                     minds exploring high-performance computing, artificial intelligence,
@@ -94,7 +107,15 @@ export default function AboutUs() {
                 </motion.p>
             </div>
 
-            <div className="max-w-2xl mx-auto relative" style={{ height: "700px" }}>
+            {/* Timeline — same SVG design on all screen sizes */}
+            <div
+                className="mx-auto relative px-10 md:px-0"
+                style={{
+                    height: "clamp(450px, 80vw, 700px)",
+                    maxWidth: "min(42rem, calc(100vw - 2rem))",
+                    overflow: "visible",
+                }}
+            >
                 <svg
                     viewBox="0 0 600 700"
                     fill="none"
@@ -168,15 +189,17 @@ export default function AboutUs() {
                         whileInView={{ opacity: 1 }}
                         transition={{ duration: 0.5, delay: i * 0.15 }}
                         viewport={{ once: true, amount: 0.3 }}
-                        className="absolute whitespace-nowrap"
+                        className="absolute"
                         style={{
                             left: `${(pos.x / 600) * 100}%`,
                             top: `${(pos.y / 700) * 100}%`,
-                            transform: i % 2 === 0 ? "translate(16px, -50%)" : "translate(-100%, -50%) translateX(-16px)",
+                            transform: i % 2 === 0 ? "translate(12px, -50%)" : "translate(calc(-100% - 12px), -50%)",
+                            // Prevent text from wrapping to keep it compact
+                            whiteSpace: "nowrap",
                         }}
                     >
-                        <p className="text-white font-bold text-sm md:text-base">{milestones[i].label}</p>
-                        <p className="text-gray-500 text-xs">{milestones[i].description}</p>
+                        <p className="text-white font-bold text-xs md:text-sm">{milestones[i].label}</p>
+                        <p className="text-gray-500 text-[10px] md:text-xs">{milestones[i].description}</p>
                     </motion.div>
                 ))}
             </div>

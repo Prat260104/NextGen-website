@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "NEXTGEN SuperComputing",
-  description: "From Code to Supercomputers — Your Journey Starts Here",
+  description: "Buildng productin ready engineers — Your Journey Starts Here",
 };
 
 export default function RootLayout({

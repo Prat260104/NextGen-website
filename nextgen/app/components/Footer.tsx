@@ -70,7 +70,7 @@ export default function Footer() {
                 viewport={{ once: true }}
                 className="text-center mb-16"
             >
-                <h3 className="text-4xl md:text-7xl lg:text-8xl font-black tracking-tight">
+                <h3 className="text-3xl sm:text-4xl md:text-7xl lg:text-8xl font-black tracking-tight">
                     <span className="text-[#4DBC1B]">NEXTGEN</span>{" "}
                     <span className="text-white">SuperComputing</span>
                 </h3>
@@ -81,7 +81,7 @@ export default function Footer() {
                 <div className="h-px bg-gradient-to-r from-transparent via-[#4DBC1B]/20 to-transparent mb-6" />
 
                 {/* Bottom Bar */}
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
                     <motion.div
                         initial={{ opacity: 0 }}
                         whileInView={{ opacity: 1 }}

@@ -16,13 +16,14 @@ interface Particle {
     driftSpeed: number;
 }
 
-const BG_COUNT = 100;
+const BG_COUNT = 80;
 
 function sampleText(
     text: string,
     w: number,
     h: number,
-    fontSize: number
+    fontSize: number,
+    maxPts = 500
 ): [number, number][] {
     const off = document.createElement("canvas");
     off.width = w;
@@ -39,8 +40,20 @@ function sampleText(
     const img = c.getImageData(0, 0, w, h);
     const pts: [number, number][] = [];
 
-    // Use large step to get ~400-800 readable points instead of thousands
-    const step = Math.max(6, Math.round(fontSize / 25));
+    // Start with a base step, then increase if we'd exceed maxPts
+    let step = Math.max(6, Math.round(fontSize / 20));
+
+    // First pass: count how many points we'd get
+    let count = 0;
+    for (let py = 0; py < h; py += step) {
+        for (let px = 0; px < w; px += step) {
+            if (img.data[(py * w + px) * 4 + 3] > 128) count++;
+        }
+    }
+    // If too many, scale step up proportionally
+    if (count > maxPts) {
+        step = Math.ceil(step * Math.sqrt(count / maxPts));
+    }
 
     for (let py = 0; py < h; py += step) {
         for (let px = 0; px < w; px += step) {
@@ -68,13 +81,22 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
     });
 
     const init = useCallback((w: number, h: number) => {
-        const ngFontSize = Math.min(h * 0.35, w * 0.18);
-        const fullFontSize = Math.min(h * 0.2, w * 0.08);
+        const isMobile = w < 768;
 
-        const ng = sampleText("NG", w, h, ngFontSize);
-        const full = sampleText("NextGen", w, h, fullFontSize);
+        // On mobile: use larger font so particles sample cleanly (not pixelated)
+        // On desktop: use standard proportional sizes
+        const ngFontSize = isMobile
+            ? Math.min(w * 0.45, h * 0.3)   // e.g. 390px phone → ~175px font
+            : Math.min(h * 0.35, w * 0.18);
 
-        console.log(`NG points: ${ng.length}, NextGen points: ${full.length}, step used: ${Math.max(6, Math.round(ngFontSize / 25))}`);
+        const fullFontSize = isMobile
+            ? Math.min(w * 0.18, h * 0.12)  // e.g. 390px phone → ~70px font
+            : Math.min(h * 0.2, w * 0.08);
+
+        // Cap particles on mobile to prevent lag
+        const maxPts = isMobile ? 300 : 600;
+        const ng = sampleText("NG", w, h, ngFontSize, maxPts);
+        const full = sampleText("NextGen", w, h, fullFontSize, maxPts);
 
         targetsRef.current = { ng, full };
 
@@ -97,8 +119,9 @@ export default function LoadingScreen({ onComplete }: { onComplete: () => void }
             });
         }
 
-        // Background particles
-        for (let i = 0; i < BG_COUNT; i++) {
+        // Background particles — fewer on mobile
+        const bgCount = isMobile ? 40 : BG_COUNT;
+        for (let i = 0; i < bgCount; i++) {
             particles.push({
                 x: Math.random() * w,
                 y: Math.random() * h,

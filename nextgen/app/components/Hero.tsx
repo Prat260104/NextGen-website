@@ -56,7 +56,7 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
             <motion.div
                 animate={{ opacity: [0.06, 0.12, 0.06], scale: [1, 1.1, 1] }}
                 transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[#4DBC1B]/10 rounded-full blur-[150px] -z-10"
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-[#4DBC1B]/10 rounded-full blur-[150px] -z-10 will-change-transform"
             />
 
             <motion.div
@@ -64,7 +64,7 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
                 className="relative z-10 max-w-5xl mx-auto"
             >
                 {/* Heading Line 1 — typing */}
-                <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-white mb-3 min-h-[1.2em]">
+                <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white mb-3 min-h-[1.2em]">
                     {line1.displayed}
                     {!line1.done && (
                         <motion.span
@@ -79,7 +79,7 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
 
                 {/* Heading Line 2 — typing, green with glow */}
                 <h2
-                    className="text-3xl md:text-5xl font-bold tracking-tight text-[#4DBC1B] mb-12 min-h-[1.2em]"
+                    className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-[#4DBC1B] mb-8 md:mb-12 min-h-[1.2em]"
                     style={{ textShadow: "0 0 40px rgba(77, 188, 27, 0.3)" }}
                 >
                     {line2.displayed}

@@ -55,7 +55,8 @@ void main() {
 }
 `;
 
-const fragmentShader = `
+const getFragmentShader = (maxSteps: number) => `
+#define MAX_STEPS ${maxSteps}
 uniform float u_time;
 uniform float u_aspect;
 uniform vec2 u_mouse;
@@ -128,7 +129,7 @@ void main() {
   float totalDist = 0.0;
   float tMax = 5.0;
 
-  for(int i = 0; i < 256; i++) {
+  for(int i = 0; i < MAX_STEPS; i++) {
     float dist = sdf(rayPos);
 
     if (dist < 0.0001 || tMax < totalDist) break;
@@ -216,7 +217,7 @@ void main() {
 // 3. MAIN SCENE COMPONENT
 // -----------------------------------------------------------------------------
 
-const ScreenPlane = () => {
+const ScreenPlane = ({ maxSteps }: { maxSteps: number }) => {
   const config = {
     scaleX: 5,
     scaleY: 5,
@@ -236,9 +237,9 @@ const ScreenPlane = () => {
         u_creepiness: { value: config.creepiness },
       },
       vertexShader,
-      fragmentShader,
+      fragmentShader: getFragmentShader(maxSteps),
     });
-  }, []);
+  }, [maxSteps]);
 
   const vec = new THREE.Vector2();
 
@@ -340,19 +341,43 @@ export default function SphereAnimation() {
   // TOGGLE THIS TO TRUE TO ENABLE BLUR/GLOW EFFECTS
   const ENABLE_EFFECTS = false;
 
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  useEffect(() => {
+    let timeoutId: NodeJS.Timeout;
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    const debouncedCheck = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkMobile, 200);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', debouncedCheck);
+    return () => {
+      window.removeEventListener('resize', debouncedCheck);
+      clearTimeout(timeoutId);
+    };
+  }, []);
+
+  const maxSteps = isMobile ? 128 : 256;
+  const dpr = isMobile ? 1 : [1, 2];
+
   return (
     // IMPORTANT: style height must be set for Canvas to appear
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <Canvas
         orthographic
         camera={{ zoom: 1, position: [0, 0, 10], near: -10, far: 10 }}
-        dpr={[1, 2]}
+        dpr={dpr as any} // Cast to any to avoid strict type issues with number | [min, max]
         gl={{ alpha: true }}
       >
         {/* Transparent background to blend with section */}
         {/* <color attach="background" args={['#000000']} /> */}
         <CameraRig />
-        <ScreenPlane />
+        <ScreenPlane maxSteps={maxSteps} />
         {ENABLE_EFFECTS && <Effects />}
       </Canvas>
     </div>
