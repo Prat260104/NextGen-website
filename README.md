@@ -1,2 +1,1 @@
-hello ,
-from NextGen 
+hello 
