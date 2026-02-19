@@ -1,11 +1,22 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, memo, useCallback } from "react";
 import Link from "next/link";
 import { motion, useScroll, useTransform } from "framer-motion";
 import InteractiveDotGrid from "./InteractiveDotGrid";
 
-function useTypewriter(text: string, speed = 50, startNow = true) {
+// 1. Typing Logic ko isolate kiya taaki pura page re-render na ho (Performance Fix)
+const TypewriterText = memo(({
+    text,
+    speed = 50,
+    startNow,
+    onDone
+}: {
+    text: string;
+    speed?: number;
+    startNow: boolean;
+    onDone?: () => void;
+}) => {
     const [displayed, setDisplayed] = useState("");
     const [done, setDone] = useState(false);
 
@@ -20,13 +31,32 @@ function useTypewriter(text: string, speed = 50, startNow = true) {
             if (i >= text.length) {
                 clearInterval(interval);
                 setDone(true);
+                if (onDone) onDone();
             }
         }, speed);
         return () => clearInterval(interval);
-    }, [text, speed, startNow]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [text, speed, startNow]); // onDone ko exclude kiya taaki interval reset na ho
 
-    return { displayed, done };
-}
+    return (
+        <>
+            {displayed}
+            {!done && startNow && (
+                <motion.span
+                    animate={{ opacity: [1, 0] }}
+                    transition={{ duration: 0.5, repeat: Infinity }}
+                    className="text-[#4DBC1B]"
+                >
+                    |
+                </motion.span>
+            )}
+        </>
+    );
+});
+TypewriterText.displayName = "TypewriterText";
+
+// 2. Background Grid ko cache (memoize) kiya
+const MemoizedGrid = memo(InteractiveDotGrid);
 
 export default function Hero({ ready = true }: { ready?: boolean }) {
     const { scrollYProgress } = useScroll();
@@ -35,9 +65,12 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
     const heroY = useTransform(scrollYProgress, [0, 0.15], [0, -50]);
 
     const [startLine1, setStartLine1] = useState(false);
-    const line1 = useTypewriter("From Code to Supercomputers", 50, startLine1);
-    const line2 = useTypewriter("Your Journey Starts Here", 50, line1.done);
-    const showUI = line2.done;
+    const [line1Done, setLine1Done] = useState(false);
+    const [line2Done, setLine2Done] = useState(false);
+
+    // Callbacks ko cache kiya taaki child components re-render na ho
+    const handleLine1Done = useCallback(() => setLine1Done(true), []);
+    const handleLine2Done = useCallback(() => setLine2Done(true), []);
 
     // Start typing only after loading screen is gone
     useEffect(() => {
@@ -46,10 +79,12 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
         return () => clearTimeout(timer);
     }, [ready]);
 
+    const showUI = line2Done;
+
     return (
         <section className="relative flex flex-col items-center justify-center min-h-screen px-4 text-center overflow-hidden">
             <div className="absolute inset-0 z-0">
-                <InteractiveDotGrid startAnimation={showUI} />
+                <MemoizedGrid startAnimation={showUI} />
             </div>
 
             {/* Subtle ambient glow — loops */}
@@ -63,35 +98,27 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
                 style={{ opacity: heroOpacity, scale: heroScale, y: heroY }}
                 className="relative z-10 max-w-5xl mx-auto"
             >
-                {/* Heading Line 1 — typing */}
+                {/* Heading Line 1 — Isolated Typing Component */}
                 <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight text-white mb-3 min-h-[1.2em]">
-                    {line1.displayed}
-                    {!line1.done && (
-                        <motion.span
-                            animate={{ opacity: [1, 0] }}
-                            transition={{ duration: 0.5, repeat: Infinity }}
-                            className="text-[#4DBC1B]"
-                        >
-                            |
-                        </motion.span>
-                    )}
+                    <TypewriterText
+                        text="From Code to Supercomputers"
+                        speed={50}
+                        startNow={startLine1}
+                        onDone={handleLine1Done}
+                    />
                 </h1>
 
-                {/* Heading Line 2 — typing, green with glow */}
+                {/* Heading Line 2 — Isolated Typing Component */}
                 <h2
                     className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight text-[#4DBC1B] mb-8 md:mb-12 min-h-[1.2em]"
                     style={{ textShadow: "0 0 40px rgba(77, 188, 27, 0.3)" }}
                 >
-                    {line2.displayed}
-                    {line1.done && !line2.done && (
-                        <motion.span
-                            animate={{ opacity: [1, 0] }}
-                            transition={{ duration: 0.5, repeat: Infinity }}
-                            className="text-[#4DBC1B]"
-                        >
-                            |
-                        </motion.span>
-                    )}
+                    <TypewriterText
+                        text="Your Journey Starts Here"
+                        speed={50}
+                        startNow={line1Done}
+                        onDone={handleLine2Done}
+                    />
                 </h2>
 
                 {/* Buttons — fade in after typing */}
