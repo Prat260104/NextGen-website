@@ -26,7 +26,7 @@ function MobileLoader({ onComplete }: { onComplete: () => void }) {
                     className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center gap-6"
                 >
                     <div className="absolute inset-0 pointer-events-none">
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#4DBC1B]/10 rounded-full blur-[80px]" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#4DBC1B]/10 rounded-full blur-[40px]" />
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -128,7 +128,7 @@ function DesktopLoader({ onComplete }: { onComplete: () => void }) {
                         animate={{ opacity: phase === "nextgen" ? 1 : 0 }}
                         transition={{ duration: 1.5 }}
                     >
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#4DBC1B]/8 rounded-full blur-[120px]" />
+                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[#4DBC1B]/8 rounded-full blur-[60px]" />
                     </motion.div>
 
                     {/* Scanline overlay for cinematic feel */}

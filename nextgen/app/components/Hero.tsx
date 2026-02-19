@@ -72,11 +72,11 @@ export default function Hero({ ready = true }: { ready?: boolean }) {
     const handleLine1Done = useCallback(() => setLine1Done(true), []);
     const handleLine2Done = useCallback(() => setLine2Done(true), []);
 
-    // Start typing only after loading screen is gone
     useEffect(() => {
         if (!ready) return;
-        const timer = setTimeout(() => setStartLine1(true), 500);
-        return () => clearTimeout(timer);
+        // Small delay to allow initial paint to settle before starting animation
+        const t = setTimeout(() => setStartLine1(true), 100);
+        return () => clearTimeout(t);
     }, [ready]);
 
     const showUI = line2Done;

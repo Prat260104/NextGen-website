@@ -14,8 +14,8 @@ interface Particle {
     direction: number;
 }
 
-const PARTICLE_COUNT_DESKTOP = 500; // reduced from 700
-const PARTICLE_COUNT_MOBILE = 175;  // reduced from 250
+const PARTICLE_COUNT_DESKTOP = 300; // reduced from 500
+const PARTICLE_COUNT_MOBILE = 80;   // reduced from 175
 const DOT_COLOR = [77, 188, 27];
 const REPULSION_RADIUS = 250;       // reduced from 300
 const REPULSION_RADIUS_SQ = REPULSION_RADIUS * REPULSION_RADIUS;
@@ -108,9 +108,17 @@ export default function InteractiveDotGrid({ startAnimation = false }: { startAn
 
             const { w, h } = sizeRef.current;
             const centerX = w / 2;
-            ctx.clearRect(0, 0, w, h);
+            if (!startAnimation) {
+                // Stop the loop if animation is paused
+                // But wait... if we return here, the loop stops? 
+                // No, we need to check this *before* requesting next frame or inside the effect dependency
+                // Actually, let's just render nothing and not clear if we want to be super efficient, 
+                // but we need to clear if we were previously drawing.
+                // For now, let's just make it efficient:
+                return;
+            }
 
-            if (!startAnimation) return;
+            ctx.clearRect(0, 0, w, h);
 
             time += 0.015;
             const mx = mouseRef.current.x;

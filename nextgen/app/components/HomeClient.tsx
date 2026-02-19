@@ -15,14 +15,13 @@ export default function HomeClient({
     return (
         <>
             {loading && <LoadingScreen onComplete={() => setLoading(false)} />}
-            <main
-                className="flex min-h-screen flex-col"
-                style={{ visibility: loading ? "hidden" : "visible" }}
-            >
-                <Navbar ready={!loading} />
-                <Hero ready={!loading} />
-                {children}
-            </main>
+            {!loading && (
+                <main className="flex min-h-screen flex-col">
+                    <Navbar ready={true} />
+                    <Hero ready={true} />
+                    {children}
+                </main>
+            )}
         </>
     );
 }
